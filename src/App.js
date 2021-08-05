@@ -1,24 +1,47 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState, useEffect} from 'react'
+import Sidebar from './Sidebar';
+import Chat from './Chat';
+import Login from './Login';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import {auth} from "./firebase"
 
 function App() {
+  const [user, setUser] = useState(null);
+
+
+  useEffect(() => {
+        auth.onAuthStateChanged(User => {
+          setUser(User);
+        })
+  },[])
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <h1>Lets Build the Whatsapp Clone</h1> */}
+      {!user? (
+        <Login />
+      ) : (
+        <div className="app__body">
+          <BrowserRouter>
+            {/* sidebar */}
+            <Sidebar />
+            <Switch>
+              <Route path="/rooms/:roomId"> 
+                  {/* chat */}
+                  <Chat />
+              </Route>
+              <Route path="/">
+                <Chat />
+              </Route>
+                
+            </Switch>
+          </BrowserRouter>
+          </div>
+      )}
+      
     </div>
+
   );
 }
 
